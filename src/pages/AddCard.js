@@ -1,6 +1,6 @@
 import Card from "../components/Card";
 import styles from "../styles/AddCard.module.scss";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { add } from "../redux/cardsSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -12,14 +12,39 @@ export default function AddCard() {
 	const [valid, setValid] = useState("12/22");
 	const [ccv, setCcv] = useState("123");
 
+	const codeInput = useRef();
+	const ccvInput = useRef();
 	const navigate = useNavigate();
 	const { lastId, user } = useSelector((state) => state.cardsSlice);
 	const dispatch = useDispatch();
 
+	const setCodeHandler = (e) => {
+		var numbers = /^[0-9]+$/;
+		if (e.target.value.match(numbers)) {
+			codeInput.current.style.border = " 1px solid black";
+			codeInput.current.style.background = "none";
+			setCode(e.target.value);
+		} else {
+			codeInput.current.style.border = " 2px solid red";
+			codeInput.current.style.background = " pink";
+		}
+	};
+	const setCcvHandler = (e) => {
+		var numbers = /^[0-9]+$/;
+		if (e.target.value.match(numbers)) {
+			ccvInput.current.style.border = " 1px solid black";
+			ccvInput.current.style.background = "none";
+			setCcv(e.target.value);
+		} else {
+			ccvInput.current.style.border = " 2px solid red";
+			ccvInput.current.style.background = " pink";
+		}
+	};
+
 	const sendCardHandler = (e) => {
 		e.preventDefault();
 		if (code.length !== 16) {
-			return false;
+			return;
 		}
 		dispatch(
 			add({
@@ -40,17 +65,12 @@ export default function AddCard() {
 			<form onSubmit={sendCardHandler}>
 				<label htmlFor="number">CARD NUMBER</label>
 				<input
-					type="number"
+					type="text"
 					id="number"
-					onChange={(e) => {
-						setCode(
-							(e.target.value = e.target.value.slice(
-								0,
-								e.target.maxLength
-							))
-						);
-					}}
+					onChange={setCodeHandler}
+					minLength="16"
 					maxLength="16"
+					ref={codeInput}
 					required
 				></input>
 				<label htmlFor="name">CARDHOLDER NAME</label>
@@ -78,9 +98,10 @@ export default function AddCard() {
 						<input
 							type="text"
 							id="ccv"
-							onChange={(e) => {
-								setCcv(e.target.value);
-							}}
+							onChange={setCcvHandler}
+							ref={ccvInput}
+							minLength={3}
+							maxLength={3}
 							required
 						/>
 					</label>

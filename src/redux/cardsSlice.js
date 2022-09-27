@@ -35,10 +35,14 @@ const cardSlice = createSlice({
 
 	extraReducers: {
 		[getUser.fulfilled]: (state, { payload }) => {
-			state.user =
+	
+			if(state.user === ""){
+				state.user =
 				payload.results[0].name.first +
 				" " +
 				payload.results[0].name.last;
+			}
+			
 		},
 		[getUser.pending]: (state, action) => {
 			state.status = "Loading data...";
