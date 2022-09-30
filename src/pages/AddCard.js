@@ -23,7 +23,9 @@ export default function AddCard() {
 		if (e.target.value.match(numbers)) {
 			codeInput.current.style.border = " 1px solid black";
 			codeInput.current.style.background = "none";
-			setCode(e.target.value);
+			let res = [...e.target.value].map((d, i) => (i) % 4 == 0 ? ' ' + d : d).join('').trim()
+			setCode(res);
+			// setCode(e.target.value)
 		} else {
 			codeInput.current.style.border = " 2px solid red";
 			codeInput.current.style.background = " pink";
@@ -43,7 +45,8 @@ export default function AddCard() {
 
 	const sendCardHandler = (e) => {
 		e.preventDefault();
-		if (code.length !== 16) {
+		console.log(code.length)
+		if (code.length !== 19) {
 			return;
 		}
 		dispatch(
